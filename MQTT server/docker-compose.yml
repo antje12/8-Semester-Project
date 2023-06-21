@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  mqtt_server:
+    image: eclipse-mosquitto:latest
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./mosquitto_config/mosquitto.conf:/mosquitto/config/mosquitto.conf
+  analog-temp:
+    build: .
+    depends_on:
+      - mqtt_server
+    environment:
+      - THINGSPEAK_FIELD=1
+      - THINGSPEAK_CHANNEL=2094407
+      - THINGSPEAK_API_KEY=VHXNJEQO1H0PY513
+      - MQTT_HOST=mqtt_server
+      - MQTT_PORT=1883
+      - MQTT_TOPIC=Temperature/CenterDevice/TempSensor
+  analog-sim:
+    build: .
+    depends_on:
+      - mqtt_server
+    environment:
+      - THINGSPEAK_FIELD=2
+      - THINGSPEAK_CHANNEL=2094407
+      - THINGSPEAK_API_KEY=VHXNJEQO1H0PY513
+      - MQTT_HOST=mqtt_server
+      - MQTT_PORT=1883
+      - MQTT_TOPIC=Sim/CenterDevice/SimSensor

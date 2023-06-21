@@ -1,0 +1,57 @@
+grammar org.xtext.EnvironmentalMonitorDsl with org.eclipse.xtext.common.Terminals
+
+generate environmentalMonitorDsl "http://www.xtext.org/EnvironmentalMonitorDsl"
+
+Model:
+	'system' name=ID
+	'baseURL' url=URL
+	rate=SampleRate
+	batch=SampleBatchSize
+	locations+=Location+
+	devices+=Device+
+;
+
+Location:
+	'location' name=ID connection=WiFi
+;
+
+Device:
+	'device' name=ID ('in'|'at') location=[Location]
+	(wifi=WiFi)?
+	(rate=SampleRate)?
+	(batch=SampleBatchSize)?
+	'deviceType' type=('ESP32'|'Arduino')
+	sensors+=Sensor+
+;
+
+SampleRate:
+	'sampRate' value=INT ('ms')?
+;
+
+SampleBatchSize:
+	'batchSize' value=INT
+;
+
+Sensor:
+	'sensor' name=ID
+	(rate=SampleRate)?
+	(batch=SampleBatchSize)?
+	'signalType' type=('Digital'|'Analog')
+	'output' output=('Temperature'|'Humidity'|'Light'|'CO2'|'Sim')
+;
+
+WiFi:
+	'WiFi' ('ssid')? ssid=SSID ('password')? password=Password
+;
+
+SSID:
+	value=STRING
+;
+
+Password:
+	value=STRING
+;
+
+URL:
+	value=STRING
+;
